@@ -1,5 +1,6 @@
-package webprocessing;
+package cz.val.webprocessing.implementation;
 
+import cz.val.webprocessing.process.Process;
 import java.io.IOException;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.process.factory.DescribeProcess;

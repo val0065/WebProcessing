@@ -1,4 +1,4 @@
-package webprocessing;
+package cz.val.webprocessing.process;
 
 import java.util.ArrayList;
 import java.util.Collection;

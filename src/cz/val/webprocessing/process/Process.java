@@ -1,4 +1,4 @@
-package webprocessing;
+package cz.val.webprocessing.process;
 
 import com.vividsolutions.jts.geom.*;
 import java.io.File;
@@ -222,7 +222,7 @@ public class Process {
                         SimpleFeature sf2 = sfi2.next();
                         MultiPolygon mp3 = (MultiPolygon) sf2.getDefaultGeometry();
                         Polygon p3 = (Polygon) mp3.getGeometryN(0);
-                        Geometry p4 = p2.intersection(p3);
+                        Geometry p4 = p2.intersection(mp3);
                         if (p4.getArea() != 0) {
                             sum += p4.getArea();
                             areas = areas + "\n" + p4.getArea() + " : " + p2.getArea() + " : " + p3.getArea();
@@ -240,7 +240,7 @@ public class Process {
 
     }
 
-    SimpleFeatureCollection overlayWithOutput(String pointString, double distance)
+    public SimpleFeatureCollection overlayWithOutput(String pointString, double distance)
             throws MalformedURLException, IOException {
 
         SimpleFeatureCollection collection = null;
