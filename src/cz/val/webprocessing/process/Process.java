@@ -24,37 +24,7 @@ import org.geotools.data.DataUtilities;
 import org.opengis.filter.MultiValuedFilter;
 
 public class Process {
-
-    public String overlayPolygonWithBuffer(String pointString, double distance, String shapeFileURL)
-            throws MalformedURLException, IOException {
-
-        String nazvy = "Objekt:Plocha prekryvu";
-
-        ShapefileDataStore sfds;
-        sfds = new ShapefileDataStore(new URL("file:///F:\\GeoServer285\\data_dir\\data\\sf\\restricted.shp"));
-
-        // ShapefileDataStoreFactory shpf = new
-        // ShapefileDataStoreFactory.ShpFileStoreFactory(new ShapefileDataStore);
-        SimpleFeatureSource fs;
-        fs = sfds.getFeatureSource("restricted");
-
-        GeometryFactory gf = new GeometryFactory();
-        String xy[] = pointString.split(" ");
-        Point point = gf.createPoint(new Coordinate(Double.parseDouble(xy[0]), Double.parseDouble(xy[1])));
-
-        Polygon p1 = (Polygon) point.buffer(distance);
-
-        SimpleFeatureIterator sfi = fs.getFeatures().features();
-        while (sfi.hasNext()) {
-            SimpleFeature sf = sfi.next();
-            MultiPolygon mp2 = (MultiPolygon) sf.getDefaultGeometry();
-            Polygon p2 = (Polygon) mp2.getGeometryN(0);
-            Polygon p3 = (Polygon) p2.intersection(p1);
-            nazvy = nazvy + "\n" + sf.getAttribute("cat") + ": " + p3.getArea();
-        }
-        return "Nalezene: " + nazvy;
-    }
-
+    
     public String lengthOfLine() throws Exception {
 
         String lengths = "Delky linii";
@@ -118,16 +88,15 @@ public class Process {
         try (SimpleFeatureIterator sfi = sfcList.features()) {
             sum = 0;
             while (sfi.hasNext()) {
-                          
+
                 SimpleFeature sf = sfi.next();
                 MultiPolygon mp1 = (MultiPolygon) sf.getDefaultGeometry();
-                
+
                 Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
-                
-                Polygon p1 = (Polygon) mp1.getGeometryN(0);
 
                 try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
                     while (sfi2.hasNext()) {
+                        Polygon p1 = (Polygon) mp1.getGeometryN(0);
                         SimpleFeature sf2 = sfi2.next();
                         MultiLineString mls = (MultiLineString) sf2.getDefaultGeometry();
                         LineString ls = (LineString) mls.getGeometryN(0);
@@ -140,6 +109,7 @@ public class Process {
                 }
             }
         }
+        // result should be 919902.3323152068
         return "Lines found: " + lengths + "\nSuma: " + sum;
 
     }
@@ -215,7 +185,7 @@ public class Process {
                 Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
 
                 Polygon p2 = (Polygon) mp2.getGeometryN(0);
-                
+
                 try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
 
                     while (sfi2.hasNext()) {
@@ -236,42 +206,8 @@ public class Process {
         long elapsedTime = stopTime - startTime;
         System.out.println(elapsedTime);
 
+        // result should be 7.5473089340863285E9
         return "Objects found: " + areas + "\nTotal sum: " + sum;
 
     }
-
-    public SimpleFeatureCollection overlayWithOutput(String pointString, double distance)
-            throws MalformedURLException, IOException {
-
-        SimpleFeatureCollection collection = null;
-
-        ShapefileDataStore sfds = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\sf\\restricted.shp"));
-        SimpleFeatureSource sfs = sfds.getFeatureSource("restricted");
-
-        SimpleFeatureType type = sfs.getSchema();
-        GeometryFactory gf = new GeometryFactory();
-        String xy[] = pointString.split(" ");
-        Point point = gf.createPoint(new Coordinate(Double.parseDouble(xy[0]), Double.parseDouble(xy[1])));
-
-        Polygon p1 = (Polygon) point.buffer(distance);
-        List<SimpleFeature> features = new ArrayList<>(0);
-        SimpleFeatureIterator sfi = sfs.getFeatures().features();
-
-        while (sfi.hasNext()) {
-            SimpleFeature sf = sfi.next();
-            MultiPolygon mp1 = (MultiPolygon) sf.getDefaultGeometry();
-            Polygon p2 = (Polygon) mp1.getGeometryN(0);
-            Polygon p3 = (Polygon) p2.intersection(p1);
-
-            if (p3.getArea() > 0) {
-                sf.setDefaultGeometry(p3);
-                features.add(sf);
-            }
-        }
-        collection = new ListFeatureCollection(type, features);
-
-        return collection;
-    }
-
 }

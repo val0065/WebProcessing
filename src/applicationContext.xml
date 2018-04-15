@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+  <beans>
+    <bean id="LengthOfLines" class="cz.val.webprocessing.LengthOfLines"/>
+    <bean id="LengthWithFilter" class="cz.val.webprocessing.LenghtWithFilter"/>
+    <bean id="OverlayPolygons" class="cz.val.webprocessing.OverlayPolygons"/>
+    <bean id="OverlayPolygonsWithFilter" class="cz.val.webprocessing.OverlayWithFilter"/>
+  </beans>
