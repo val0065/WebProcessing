@@ -71,12 +71,12 @@ public class Process {
         String lengths = "Delky linii";
 
         ShapefileDataStore sfds1 = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_cr.shp"));
-        SimpleFeatureSource fs1 = sfds1.getFeatureSource("chranene_uzemi_cr");
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_cr.shp"));
+        SimpleFeatureSource fs1 = sfds1.getFeatureSource("zeleznice_cr");
 
         ShapefileDataStore sfds2 = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_cr.shp"));
-        SimpleFeatureSource fs2 = sfds2.getFeatureSource("zeleznice_cr");
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_cr.shp"));
+        SimpleFeatureSource fs2 = sfds2.getFeatureSource("chranene_uzemi_cr");
 
         SimpleFeatureCollection sfc = DataUtilities.collection(fs1.getFeatures());
         SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
@@ -90,13 +90,13 @@ public class Process {
             while (sfi.hasNext()) {
 
                 SimpleFeature sf = sfi.next();
-                MultiPolygon mp1 = (MultiPolygon) sf.getDefaultGeometry();
+                MultiLineString mp1 = (MultiLineString) sf.getDefaultGeometry();
 
                 Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
 
                 try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
                     while (sfi2.hasNext()) {
-                        Polygon p1 = (Polygon) mp1.getGeometryN(0);
+                        LineString p1 = (LineString) mp1.getGeometryN(0);
                         SimpleFeature sf2 = sfi2.next();
                         MultiLineString mls = (MultiLineString) sf2.getDefaultGeometry();
                         LineString ls = (LineString) mls.getGeometryN(0);
@@ -111,11 +111,8 @@ public class Process {
         }
         // result should be 919902.3323152068
         return "Lines found: " + lengths + "\nSuma: " + sum;
-
     }
 
-    // ShapefileDataStoreFactory shpf = new
-    // ShapefileDataStoreFactory.ShpFileStoreFactory(new ShapefileDataStore);
     public String overlayPolygons() throws IOException {
 
         String areas = "Object : Area of overlay";
