@@ -1,27 +1,16 @@
 package cz.val.webprocessing.process;
 
 import com.vividsolutions.jts.geom.*;
-import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.*;
-import java.util.*;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.Query;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.shapefile.*;
 import org.opengis.feature.simple.*;
 import org.geotools.data.simple.*;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Filter;
 import org.geotools.data.DataUtilities;
-import org.opengis.filter.MultiValuedFilter;
 
 public class Process {
     
@@ -70,36 +59,36 @@ public class Process {
 
         String lengths = "Delky linii";
 
-        ShapefileDataStore sfds1 = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_cr.shp"));
-        SimpleFeatureSource fs1 = sfds1.getFeatureSource();
-
-        ShapefileDataStore sfds2 = new ShapefileDataStore(
+        ShapefileDataStore lineDataStore = new ShapefileDataStore(
                 new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_cr.shp"));
-        SimpleFeatureSource fs2 = sfds2.getFeatureSource();
+        SimpleFeatureSource lineFeatureStore = lineDataStore.getFeatureSource();
 
-        SimpleFeatureCollection sfc = DataUtilities.collection(fs1.getFeatures());
-        SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
+        ShapefileDataStore polygonDataStore = new ShapefileDataStore(
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_cr.shp"));
+        SimpleFeatureSource polygonFeatureStore = polygonDataStore.getFeatureSource();
 
-        ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
-        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc2);
+        SimpleFeatureCollection lineCollection = DataUtilities.collection(lineFeatureStore.getFeatures());
+        SimpleFeatureCollection polygonCollection = DataUtilities.collection(polygonFeatureStore.getFeatures());
+
+        ListFeatureCollection lineList = new ListFeatureCollection(lineCollection);
+        ListFeatureCollection polygonList = new ListFeatureCollection(polygonCollection);
 
         double sum;
-        try (SimpleFeatureIterator sfi = sfcList.features()) {
+        try (SimpleFeatureIterator lineIterator = lineList.features()) {
             sum = 0;
-            while (sfi.hasNext()) {
+            while (lineIterator.hasNext()) {
 
-                SimpleFeature sf = sfi.next();
-                MultiLineString mp1 = (MultiLineString) sf.getDefaultGeometry();
+                SimpleFeature sf = lineIterator.next();
+                MultiLineString mls = (MultiLineString) sf.getDefaultGeometry();
 
                 Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
 
-                try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
-                    while (sfi2.hasNext()) {
-                        LineString p1 = (LineString) mp1.getGeometryN(0);
-                        SimpleFeature sf2 = sfi2.next();
-                        MultiLineString mls = (MultiLineString) sf2.getDefaultGeometry();
-                        LineString ls = (LineString) mls.getGeometryN(0);
+                try (SimpleFeatureIterator polygonIterator = lineList.subCollection(filter).features()) {
+                    while (polygonIterator.hasNext()) {
+                        LineString p1 = (LineString) mls.getGeometryN(0);
+                        SimpleFeature sf2 = polygonIterator.next();
+                        MultiLineString mls2 = (MultiLineString) sf2.getDefaultGeometry();
+                        LineString ls = (LineString) mls2.getGeometryN(0);
                         Geometry result = p1.intersection(ls);
                         if (result.getLength() != 0) {
                             sum += result.getLength();
