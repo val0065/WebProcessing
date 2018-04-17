@@ -71,67 +71,18 @@ public class Process {
         String lengths = "Delky linii";
 
         ShapefileDataStore sfds1 = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_cr.shp"));
-        SimpleFeatureSource fs1 = sfds1.getFeatureSource();
-
-        ShapefileDataStore sfds2 = new ShapefileDataStore(
                 new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_cr.shp"));
-        SimpleFeatureSource fs2 = sfds2.getFeatureSource();
-
-        SimpleFeatureCollection sfc = DataUtilities.collection(fs1.getFeatures());
-        SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
-
-        ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
-        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc);
-
-        double sum;
-        try (SimpleFeatureIterator sfi = sfcList.features()) {
-            sum = 0;
-            while (sfi.hasNext()) {
-
-                SimpleFeature sf = sfi.next();
-                MultiLineString mp1 = (MultiLineString) sf.getDefaultGeometry();
-
-                Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
-
-                try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
-                    while (sfi2.hasNext()) {
-                        LineString p1 = (LineString) mp1.getGeometryN(0);
-                        SimpleFeature sf2 = sfi2.next();
-                        MultiLineString mls = (MultiLineString) sf2.getDefaultGeometry();
-                        LineString ls = (LineString) mls.getGeometryN(0);
-                        Geometry result = p1.intersection(ls);
-                        if (result.getLength() != 0) {
-                            sum += result.getLength();
-//                            lengths = lengths + "\n" + result.getLength();
-                        }
-                    }
-                }
-            }
-        }
-        // result should be 919902.3323152068
-        return "Lines found: " + lengths + "\nSuma: " + sum;
-    }
-    
-    public String lengthOfLineWithFilterMSK() throws Exception {
-
-        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-
-        String lengths = "Delky linii";
-
-        ShapefileDataStore sfds1 = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_msk.shp"));
         SimpleFeatureSource fs1 = sfds1.getFeatureSource();
 
         ShapefileDataStore sfds2 = new ShapefileDataStore(
-                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_msk.shp"));
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_cr.shp"));
         SimpleFeatureSource fs2 = sfds2.getFeatureSource();
 
         SimpleFeatureCollection sfc = DataUtilities.collection(fs1.getFeatures());
         SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
 
         ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
-        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc);
+        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc2);
 
         double sum;
         try (SimpleFeatureIterator sfi = sfcList.features()) {
@@ -158,7 +109,55 @@ public class Process {
                 }
             }
         }
-        // result should be 919902.3323152068
+        // should be 919902.3323152068
+        return "Lines found: " + lengths + "\nSuma: " + sum;
+    }
+    
+    public String lengthOfLineWithFilterMSK() throws Exception {
+
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+
+        String lengths = "Delky linii";
+
+        ShapefileDataStore sfds1 = new ShapefileDataStore(
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_msk.shp"));
+        SimpleFeatureSource fs1 = sfds1.getFeatureSource();
+
+        ShapefileDataStore sfds2 = new ShapefileDataStore(
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_msk.shp"));
+        SimpleFeatureSource fs2 = sfds2.getFeatureSource();
+
+        SimpleFeatureCollection sfc = DataUtilities.collection(fs1.getFeatures());
+        SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
+
+        ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
+        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc2);
+
+        double sum;
+        try (SimpleFeatureIterator sfi = sfcList.features()) {
+            sum = 0;
+            while (sfi.hasNext()) {
+
+                SimpleFeature sf = sfi.next();
+                MultiLineString mp1 = (MultiLineString) sf.getDefaultGeometry();
+
+                Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
+
+                try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
+                    while (sfi2.hasNext()) {
+                        LineString p1 = (LineString) mp1.getGeometryN(0);
+                        SimpleFeature sf2 = sfi2.next();
+                        MultiLineString mls = (MultiLineString) sf2.getDefaultGeometry();
+                        LineString ls = (LineString) mls.getGeometryN(0);
+                        Geometry result = p1.intersection(ls);
+                        if (result.getLength() != 0) {
+                            sum += result.getLength();
+                            lengths = lengths + "\n" + result.getLength();
+                        }
+                    }
+                }
+            }
+        }
         return "Lines found: " + lengths + "\nSuma: " + sum;
     }
 
@@ -196,7 +195,6 @@ public class Process {
                 }
             }
         }
-
         return "Objects found: " + areas + "\nTotal sum: " + sum;
     }
 
@@ -219,7 +217,7 @@ public class Process {
         SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
 
         ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
-        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc);
+        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc2);
 
         double sum;
         try (SimpleFeatureIterator sfi = sfcList.features()) {
@@ -233,7 +231,7 @@ public class Process {
 
                 Polygon p2 = (Polygon) mp2.getGeometryN(0);
 
-                try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
+                try (SimpleFeatureIterator sfi2 = sfcList2.subCollection(filter).features()) {
 
                     while (sfi2.hasNext()) {
                         SimpleFeature sf2 = sfi2.next();
@@ -277,7 +275,7 @@ public class Process {
         SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
 
         ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
-        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc);
+        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc2);
 
         double sum;
         try (SimpleFeatureIterator sfi = sfcList.features()) {
@@ -311,7 +309,6 @@ public class Process {
         long elapsedTime = stopTime - startTime;
         System.out.println(elapsedTime);
 
-        // result should be 7.5473089340863285E9
         return "Objects found: " + areas + "\nTotal sum: " + sum;
 
     }
