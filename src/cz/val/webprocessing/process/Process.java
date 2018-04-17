@@ -103,7 +103,7 @@ public class Process {
                         Geometry result = p1.intersection(ls);
                         if (result.getLength() != 0) {
                             sum += result.getLength();
-                            lengths = lengths + "\n" + result.getLength();
+//                            lengths = lengths + "\n" + result.getLength();
                         }
                     }
                 }

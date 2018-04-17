@@ -5,4 +5,6 @@
     <bean id="LengthWithFilter" class="cz.val.webprocessing.implementation.LengthWithFilter"/>
     <bean id="OverlayPolygons" class="cz.val.webprocessing.implementation.OverlayPolygons"/>
     <bean id="OverlayPolygonsWithFilter" class="cz.val.webprocessing.implementation.OverlayWithFilter"/>
+    <bean id="OverlayPolygonsWithFilterMSK" class="cz.val.webprocessing.implementation.AreaMsk"/>
+    <bean id="LengthWithFilterMSK" class="cz.val.webprocessing.implementation.LengthMsk"/>
   </beans>
