@@ -53,7 +53,7 @@ public class Process {
 
     }
 
-//    public String lengthOfLineWithFilter() throws Exception {
+//    public String lengthOfLineWithFilter2() throws Exception {
 //
 //        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 //
@@ -102,7 +102,7 @@ public class Process {
 //        return "Lines found: " + lengths + "\nSuma: " + sum;
 //    }
     
-    public String lengthOfLineWithFilter2() throws Exception {
+    public String lengthOfLineWithFilter() throws Exception {
 
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 
@@ -162,34 +162,35 @@ public class Process {
 
         ShapefileDataStore sfds1 = new ShapefileDataStore(
                 new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_msk.shp"));
-        SimpleFeatureSource fs1 = sfds1.getFeatureSource();
+        SimpleFeatureSource lineFeatureStore = sfds1.getFeatureSource();
 
         ShapefileDataStore sfds2 = new ShapefileDataStore(
                 new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_msk.shp"));
-        SimpleFeatureSource fs2 = sfds2.getFeatureSource();
+        SimpleFeatureSource polygonFeatureStore = sfds2.getFeatureSource();
 
-        SimpleFeatureCollection sfc = DataUtilities.collection(fs1.getFeatures());
-        SimpleFeatureCollection sfc2 = DataUtilities.collection(fs2.getFeatures());
+        SimpleFeatureCollection lineCollection = DataUtilities.collection(lineFeatureStore.getFeatures());
+        SimpleFeatureCollection polygonCollection = DataUtilities.collection(polygonFeatureStore.getFeatures());
 
-        ListFeatureCollection sfcList = new ListFeatureCollection(sfc);
-        ListFeatureCollection sfcList2 = new ListFeatureCollection(sfc2);
+        ListFeatureCollection lineList = new ListFeatureCollection(lineCollection);
+        ListFeatureCollection polygonList = new ListFeatureCollection(polygonCollection);
 
         double sum;
-        try (SimpleFeatureIterator sfi = sfcList.features()) {
+        try (SimpleFeatureIterator lineIterator = lineList.features()) {
             sum = 0;
-            while (sfi.hasNext()) {
+            while (lineIterator.hasNext()) {
 
-                SimpleFeature sf = sfi.next();
-                MultiLineString mp1 = (MultiLineString) sf.getDefaultGeometry();
+                SimpleFeature sf = lineIterator.next();
+                MultiLineString mls = (MultiLineString) sf.getDefaultGeometry();
+                LineString p1 = (LineString) mls.getGeometryN(0);
 
                 Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
 
-                try (SimpleFeatureIterator sfi2 = sfcList.subCollection(filter).features()) {
-                    while (sfi2.hasNext()) {
-                        LineString p1 = (LineString) mp1.getGeometryN(0);
-                        SimpleFeature sf2 = sfi2.next();
-                        MultiLineString mls = (MultiLineString) sf2.getDefaultGeometry();
-                        LineString ls = (LineString) mls.getGeometryN(0);
+                try (SimpleFeatureIterator polygonIterator = polygonList.subCollection(filter).features()) {
+                    while (polygonIterator.hasNext()) {
+                        
+                        SimpleFeature sf2 = polygonIterator.next();
+                        MultiPolygon mls2 = (MultiPolygon) sf2.getDefaultGeometry();
+                        Polygon ls = (Polygon) mls2.getGeometryN(0);
                         Geometry result = p1.intersection(ls);
                         if (result.getLength() != 0) {
                             sum += result.getLength();
@@ -199,6 +200,7 @@ public class Process {
                 }
             }
         }
+        
         return "Lines found: " + lengths + "\nSuma: " + sum;
     }
 

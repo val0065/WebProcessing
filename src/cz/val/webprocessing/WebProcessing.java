@@ -13,9 +13,9 @@ public class WebProcessing {
 //        System.out.println(proc.lengthOfLineWithFilter());
 //        System.out.println(proc.overlayPolygons());
 //        System.out.println(proc.overlayPolygonsWithFilter());
-//        System.out.println(proc.lengthOfLineWithFilterMSK());
+        System.out.println(proc.lengthOfLineWithFilterMSK());
 //        System.out.println(proc.overlayPolygonsWithFilterMSK());
-        System.out.println(proc.lengthOfLineWithFilter2());
+//        System.out.println(proc.lengthOfLineWithFilter2());
 
     }
 
