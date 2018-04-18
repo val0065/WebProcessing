@@ -53,7 +53,56 @@ public class Process {
 
     }
 
-    public String lengthOfLineWithFilter() throws Exception {
+//    public String lengthOfLineWithFilter() throws Exception {
+//
+//        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+//
+//        String lengths = "Delky linii";
+//
+//        ShapefileDataStore lineDataStore = new ShapefileDataStore(
+//                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\zeleznice_cr.shp"));
+//        SimpleFeatureSource lineFeatureStore = lineDataStore.getFeatureSource();
+//
+//        ShapefileDataStore polygonDataStore = new ShapefileDataStore(
+//                new URL("file:///F:\\GeoServer285\\data_dir\\data\\test_data\\chranene_uzemi_cr.shp"));
+//        SimpleFeatureSource polygonFeatureStore = polygonDataStore.getFeatureSource();
+//
+//        SimpleFeatureCollection lineCollection = DataUtilities.collection(lineFeatureStore.getFeatures());
+//        SimpleFeatureCollection polygonCollection = DataUtilities.collection(polygonFeatureStore.getFeatures());
+//
+//        ListFeatureCollection lineList = new ListFeatureCollection(lineCollection);
+//        ListFeatureCollection polygonList = new ListFeatureCollection(polygonCollection);
+//
+//        double sum;
+//        try (SimpleFeatureIterator lineIterator = lineList.features()) {
+//            sum = 0;
+//            while (lineIterator.hasNext()) {
+//
+//                SimpleFeature sf = lineIterator.next();
+//                MultiLineString mls = (MultiLineString) sf.getDefaultGeometry();
+//
+//                Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
+//
+//                try (SimpleFeatureIterator polygonIterator = lineList.subCollection(filter).features()) {
+//                    while (polygonIterator.hasNext()) {
+//                        LineString p1 = (LineString) mls.getGeometryN(0);
+//                        SimpleFeature sf2 = polygonIterator.next();
+//                        MultiLineString mls2 = (MultiLineString) sf2.getDefaultGeometry();
+//                        LineString ls = (LineString) mls2.getGeometryN(0);
+//                        Geometry result = p1.intersection(ls);
+//                        if (result.getLength() != 0) {
+//                            sum += result.getLength();
+//                            lengths = lengths + "\n" + result.getLength();
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        // should be 919902.3323152068
+//        return "Lines found: " + lengths + "\nSuma: " + sum;
+//    }
+    
+    public String lengthOfLineWithFilter2() throws Exception {
 
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 
@@ -80,15 +129,16 @@ public class Process {
 
                 SimpleFeature sf = lineIterator.next();
                 MultiLineString mls = (MultiLineString) sf.getDefaultGeometry();
+                LineString p1 = (LineString) mls.getGeometryN(0);
 
                 Filter filter = ff.intersects(ff.property("the_geom"), ff.literal(sf.getDefaultGeometry()));
 
-                try (SimpleFeatureIterator polygonIterator = lineList.subCollection(filter).features()) {
+                try (SimpleFeatureIterator polygonIterator = polygonList.subCollection(filter).features()) {
                     while (polygonIterator.hasNext()) {
-                        LineString p1 = (LineString) mls.getGeometryN(0);
+                        
                         SimpleFeature sf2 = polygonIterator.next();
-                        MultiLineString mls2 = (MultiLineString) sf2.getDefaultGeometry();
-                        LineString ls = (LineString) mls2.getGeometryN(0);
+                        MultiPolygon mls2 = (MultiPolygon) sf2.getDefaultGeometry();
+                        Polygon ls = (Polygon) mls2.getGeometryN(0);
                         Geometry result = p1.intersection(ls);
                         if (result.getLength() != 0) {
                             sum += result.getLength();
@@ -98,9 +148,11 @@ public class Process {
                 }
             }
         }
-        // should be 919902.3323152068
+
         return "Lines found: " + lengths + "\nSuma: " + sum;
     }
+    
+
     
     public String lengthOfLineWithFilterMSK() throws Exception {
 

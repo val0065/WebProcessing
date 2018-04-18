@@ -12,7 +12,7 @@ public class LengthWithFilter implements GeoServerProcess {
     @DescribeResult(name = "result", description = "output result")
     public String execute() throws IOException, Exception {
         Process p = new Process();
-        return p.lengthOfLineWithFilter();
+        return p.lengthOfLineWithFilter2();
     }
 
 }
