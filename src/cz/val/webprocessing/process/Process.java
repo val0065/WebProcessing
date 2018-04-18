@@ -148,7 +148,6 @@ public class Process {
                 }
             }
         }
-
         return "Lines found: " + lengths + "\nSuma: " + sum;
     }
     
