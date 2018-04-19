@@ -14,6 +14,22 @@ import org.geotools.data.DataUtilities;
 
 public class Process {
     
+    public String pointsCount() throws Exception{
+        
+        int count = 0;
+        
+        ShapefileDataStore sfds1 = new ShapefileDataStore(
+                new URL("file:///F:\\GeoServer285\\data_dir\\data\\sf\\bugsites.shp"));
+        SimpleFeatureSource fs1 = sfds1.getFeatureSource();
+        
+        try (SimpleFeatureIterator sfi = fs1.getFeatures().features()) {
+               count =  DataUtilities.count(sfi);
+        }
+        
+        return "Pocet bodu: " + count;
+        
+    }
+    
     public String lengthOfLine() throws Exception {
 
         String lengths = "Delky linii";
