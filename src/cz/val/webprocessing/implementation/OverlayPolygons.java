@@ -1,5 +1,6 @@
 package cz.val.webprocessing.implementation;
 
+import cz.val.webprocessing.process.OldProcess;
 import cz.val.webprocessing.process.Process;
 import java.io.IOException;
 import org.geotools.process.factory.DescribeParameter;
@@ -12,7 +13,7 @@ public class OverlayPolygons implements GeoServerProcess {
     
     @DescribeResult(name="result", description="output result")
     public String execute() throws IOException{
-        Process p = new Process();
+        OldProcess p = new OldProcess();
         return p.overlayPolygons();
     }    
 }

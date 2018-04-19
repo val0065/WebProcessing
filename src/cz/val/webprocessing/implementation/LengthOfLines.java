@@ -1,6 +1,6 @@
 package cz.val.webprocessing.implementation;
 
-import cz.val.webprocessing.process.Process;
+import cz.val.webprocessing.process.OldProcess;
 import java.io.IOException;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.process.factory.DescribeProcess;
@@ -11,7 +11,7 @@ public class LengthOfLines implements GeoServerProcess {
 
     @DescribeResult(name = "result", description = "output result")
     public String execute() throws IOException, Exception {
-        Process p = new Process();
+        OldProcess p = new OldProcess();
         return p.lengthOfLine();
     }
 
