@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-  <beans>
+<beans>
     <bean id="LengthOfLines" class="cz.val.webprocessing.implementation.LengthOfLines"/>
     <bean id="LengthWithFilter" class="cz.val.webprocessing.implementation.LengthWithFilter"/>
     <bean id="OverlayPolygons" class="cz.val.webprocessing.implementation.OverlayPolygons"/>
     <bean id="OverlayPolygonsWithFilter" class="cz.val.webprocessing.implementation.OverlayWithFilter"/>
     <bean id="OverlayPolygonsWithFilterMSK" class="cz.val.webprocessing.implementation.AreaMsk"/>
     <bean id="LengthWithFilterMSK" class="cz.val.webprocessing.implementation.LengthMsk"/>
-  </beans>
+    <bean id="OverlayPolygonsWithFilterCechy" class="cz.val.webprocessing.implementation.AreaCechy"/>
+    <bean id="LengthWithFilterCechy" class="cz.val.webprocessing.implementation.LengthCechy"/>
+</beans>
